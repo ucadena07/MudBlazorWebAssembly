@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MudTemplate.Backend.Utilities
+namespace MudTemplate.Shared.Utilities
 {
     public static class SD
     {

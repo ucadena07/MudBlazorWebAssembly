@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
-using static MudTemplate.Backend.Utilities.SD;
+using static MudTemplate.Shared.Utilities.SD;
 
 namespace MudTemplate.Shared.Models
 {

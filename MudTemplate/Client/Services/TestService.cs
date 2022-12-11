@@ -1,6 +1,7 @@
-﻿using MudTemplate.Backend.Utilities;
+﻿
 using MudTemplate.Client.Services.IServices;
 using MudTemplate.Shared.Models;
+using MudTemplate.Shared.Utilities;
 
 namespace MudTemplate.Client.Services
 {

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using MudTemplate.Backend;
 using MudTemplate.Server.Helpers.Interfaces;
 using MudTemplate.Server.Helpers.Logging;
 using Serilog;
@@ -9,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+//Add Db
+builder.Services.AddDbContext<ApplicationDbContext>(opt =>
+opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Logging
 Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("Log/apiLogs.txt",rollingInterval:RollingInterval.Month).WriteTo.Console().CreateLogger();

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
-using MudTemplate.Backend.Utilities;
 using MudTemplate.Client;
 using MudTemplate.Client.Services;
 using MudTemplate.Client.Services.Http;
 using MudTemplate.Client.Services.IServices;
+using MudTemplate.Shared.Utilities;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
