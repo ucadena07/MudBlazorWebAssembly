@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MudTemplate.Server.Helpers.Interfaces;
+using MudTemplate.Shared.Models;
 
 namespace MudTemplate.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -14,24 +16,34 @@ namespace MudTemplate.Server.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly ILogging _customeLogger;
+        private APIResponseV2 _response { get; set; }
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, ILogging customLogger)
         {
             _logger = logger;
             _customeLogger = customLogger;  
+            _response= new APIResponseV2(); 
         }
 
         [HttpGet]
-        public List<string> TestEndpoint()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponseV2>> Get()
         {
             try
             {
-                _customeLogger.Log("Getting villas", "normal");
-                return new List<string>() { "test", "test2" };
+                _response.IsSuccess = true;
+                _response.Result = new List<string>() { "test", "test2" };
+                _response.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(_response);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                _response.IsSuccess = false;
+                _response.Result = null;
+                _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                _response.ErrorMessages.Add(e.Message);
                 throw;
             }
       
