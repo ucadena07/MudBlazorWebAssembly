@@ -15,7 +15,8 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 SD.BaseUrl = new Uri(builder.HostEnvironment.BaseAddress).ToString();
 builder.Services.AddScoped<IHttpService, HttpService>();
-builder.Services.AddScoped<ITestService, TestService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 

@@ -1,14 +1,21 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using MudTemplate.Backend;
+using MudTemplate.Backend.Repositories;
 using MudTemplate.Server.Helpers.Interfaces;
 using MudTemplate.Server.Helpers.Logging;
+using MudTemplate.Server.Helpers.Middleware;
+using MudTemplate.Shared.IRepositories;
+using MudTemplate.Shared.Utilities;
+using MudTemplate.Shared.Utilities.IUtilities;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddProjectServices();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -39,10 +46,15 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
+
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+
+
+
+app.CustomExceptionMiddleware();
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();

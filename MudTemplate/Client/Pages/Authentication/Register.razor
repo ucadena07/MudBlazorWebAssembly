@@ -1,4 +1,11 @@
 ﻿@page "/pages/authentication/register"
+@using MudTemplate.Client.Services.IServices;
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+
+@inject NavigationManager _navManager
+@inject IAccountService _accountService
+@inject ISnackbar Snackbar
 @layout LoginLayout
 
 
@@ -7,19 +14,50 @@
 <MudText Typo="Typo.h4" GutterBottom="true">Sign Up</MudText>
 <MudText>Already have an account? <MudLink Href="/pages/authentication/login">Sign In</MudLink></MudText>
 
-<MudTextField T="string" Label="Username" Variant="Variant.Outlined" Class="my-4"></MudTextField>
+<MudForm @bind-IsValid="@success" @ref="form">
+    <MudTextField T="string"
+                  Label="E-mail"
+                  Variant="Variant.Outlined"
+                  Class="mt-4" Required="true"
+                  RequiredError="required"
+                  @bind-Value="UserDetails.UserName"></MudTextField>
 
-<MudTextField T="string" Label="E-mail" Variant="Variant.Outlined"></MudTextField>
+    <MudTextField @bind-Value="@UserDetails.Password"
+                  Label="Password"
+                  Variant="Variant.Outlined"
+                  InputType="@PasswordInput"
+                  Adornment="Adornment.End"
+                  AdornmentIcon="@PasswordInputIcon"
+                  OnAdornmentClick="TogglePasswordVisibility"
+                  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))"
+                  Class="mt-4" Required="true"
+                  RequiredError="required" />
+    <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" OnClick="RegisterUser" Size="Size.Large" FullWidth="true">Register</MudButton>
 
-<MudTextField @bind-Value="@Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="mt-4" />
-
-<MudCheckBox @bind-Checked="@AgreeToTerms" Label="I agree to the terms and privacy" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
-
-<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!AgreeToTerms)" Link="/pages/authentication/login" Size="Size.Large" FullWidth="true">Register</MudButton>
+</MudForm>
 
 @code {
-    string Password { get; set; }
-    public bool AgreeToTerms { get; set; }
+    private User UserDetails { get; set; } = new();
+    MudForm form = new();
+    bool success = false;
+    string[] errors = { };
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "Password is required!";
+            yield break;
+        }
+        if (pw.Length < 8)
+            yield return "Password must be at least of length 8";
+        if (!Regex.IsMatch(pw, @"[A-Z]"))
+            yield return "Password must contain at least one capital letter";
+        if (!Regex.IsMatch(pw, @"[a-z]"))
+            yield return "Password must contain at least one lowercase letter";
+        if (!Regex.IsMatch(pw, @"[0-9]"))
+            yield return "Password must contain at least one digit";
+    }
 
     bool PasswordVisibility;
     InputType PasswordInput = InputType.Password;
@@ -40,4 +78,26 @@
             PasswordInput = InputType.Text;
         }
     }
+
+    private async Task RegisterUser()
+    {
+        await form?.Validate();
+
+        if (success)
+        {
+            var response = await _accountService.CreateUser<APIResponse<bool?>>(UserDetails);
+            if (response.IsSuccess)
+            {
+                _navManager.NavigateTo("/pages/authentication/login");
+            }
+            else
+            {
+                Snackbar.Add("Something went wrong", Severity.Error);
+            }
+
+        }
+
+
+    }
+
 }

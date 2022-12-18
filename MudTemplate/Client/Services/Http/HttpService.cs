@@ -30,18 +30,13 @@ namespace MudTemplate.Client.Services.Http
                     var stringContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
                     apiResponse = await _httpClient.PostAsync(URL, stringContent);
                     break;
-
                 default:
-
                     break;
             }
  
             try
-            {
-        
+            {    
                 var response = await Deserialize<T>(apiResponse, defaultJsonSerializerOptions);
-
-
                 return response;
        
             }
@@ -50,7 +45,6 @@ namespace MudTemplate.Client.Services.Http
                 var temp = new APIResponse<T>();
                 temp.ErrorMessages.Add(await apiResponse.Content.ReadAsStringAsync());
                 temp.ErrorMessages.Add(e.StackTrace);
-                temp.ErrorMessages.Add(e.Message);
                 temp.StatusCode = apiResponse.StatusCode;
 
                 var APIResponse = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(temp));

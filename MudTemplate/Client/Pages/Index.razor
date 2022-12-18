@@ -1,7 +1,7 @@
 ﻿@page "/home"
 @using MudTemplate.Client.Services.IServices;
 @using MudTemplate.Shared.Models;
-@inject ITestService _test
+
 
 <PageTitle>Index</PageTitle>
 
@@ -11,9 +11,5 @@ Welcome to your new app.
 
 
 @code{
-    protected override async Task OnInitializedAsync()
-    {
-        var results = await _test.GetTest<APIResponse<List<string>>>();
-       
-    }
+
 }

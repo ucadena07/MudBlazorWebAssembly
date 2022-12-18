@@ -15,8 +15,10 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
     <NavMenu/>
     </MudDrawer>
-    <MudMainContent>
-        @Body
+    <MudMainContent >
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-8">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
 

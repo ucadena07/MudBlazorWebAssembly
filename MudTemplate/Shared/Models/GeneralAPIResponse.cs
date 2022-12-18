@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace MudTemplate.Shared.Models
 {
-    public class APIResponseV2
+    public class GeneralAPIResponse
     {
         public HttpStatusCode StatusCode { get; set; }
         public bool IsSuccess { get; set; }
-        public List<string> ErrorMessages { get; set; }
+        public List<string> ErrorMessages { get; set; } = new();
         public object Result { get; set; } = default;
     }
 }

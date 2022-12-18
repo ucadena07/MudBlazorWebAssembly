@@ -1,0 +1,67 @@
+﻿@page "/users/manageusers"
+@using MudTemplate.Client.Services.IServices;
+@using MudTemplate.Shared.Dtos;
+@inject IUserService _userService
+
+<style>
+    .center {
+        text-align: center !important;
+    }
+</style>
+
+
+<MudPaper Class="pa-8 mb-lg-5">
+    <MudGrid>
+        <MudItem xs="12" md="3">
+            <MudTextField T="string" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+<MudSpacer />
+@if (UserList is not null)
+{
+    <MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true" Style="overflow-x: auto;">
+        <thead>
+            <tr>
+                <th>UserName</th>
+                <th class="center">Active</th>
+                <th class="center">Blocked</th>
+                <th>Last Login Date</th>
+                <th style="text-align:center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in UserList)
+            {
+                <tr>
+                    <td>@row.UserName</td>
+                    <td class="center"><MudChip Variant="Variant.Text" Color="Color.Info">@(row.Active == true ? "Yes" : "No")</MudChip></td>
+                        <td class="center"><MudChip Variant="Variant.Text" Color="Color.Info">@(row.Blocked == true ? "Yes" : "No")</MudChip></td>
+                        <td>@row.LastLoginDate?.ToString("MM/dd/yyyy")</td>
+                        <td class="center"><MudIcon Icon="fas fa-user-edit" Color="Color.Primary" /></td>
+                    </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}
+else
+{
+    <LoadingComponent />
+}
+
+
+
+
+@code {
+    private List<UserDto> UserList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var apiRes = await _userService.GetAll<APIResponse<List<UserDto>>>();
+        if (apiRes.IsSuccess)
+        {
+            UserList = apiRes.Result;
+
+        }
+    }
+}

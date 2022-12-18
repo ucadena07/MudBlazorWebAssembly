@@ -2,8 +2,8 @@
 
 namespace MudTemplate.Client.Services.IServices
 {
-    public interface ITestService
+    public interface IAccountService
     {
-        Task<T> GetTest<T>();
+        Task<T> CreateUser<T>(User setObj);
     }
 }
