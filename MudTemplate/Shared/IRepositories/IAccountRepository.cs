@@ -11,6 +11,6 @@ namespace MudTemplate.Shared.IRepositories
     public interface IAccountRepository
     {
         Task CreateUser(User model);
-        bool VerifyUser(User model);
+        Task<bool> VerifyUser(User model);
     }
 }

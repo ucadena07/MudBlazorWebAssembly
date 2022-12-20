@@ -1,4 +1,5 @@
-﻿using MudTemplate.Backend;
+﻿using Microsoft.EntityFrameworkCore;
+using MudTemplate.Backend;
 using MudTemplate.Shared.Entities;
 using MudTemplate.Shared.IRepositories;
 using MudTemplate.Shared.Models;
@@ -34,9 +35,9 @@ namespace MudTemplate.Backend.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public bool VerifyUser(User model)
+        public async Task<bool> VerifyUser(User model)
         {
-            var user = _context.SiteUsers.FirstOrDefault(it => it.UserName == model.UserName);  
+            var user = await _context.SiteUsers.FirstOrDefaultAsync(it => it.UserName == model.UserName);  
             if (user == null)
             {
                 return false;

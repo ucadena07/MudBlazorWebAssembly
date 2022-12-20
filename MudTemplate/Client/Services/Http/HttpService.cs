@@ -43,9 +43,19 @@ namespace MudTemplate.Client.Services.Http
             catch (Exception e)
             {
                 var temp = new APIResponse<T>();
-                temp.ErrorMessages.Add(await apiResponse.Content.ReadAsStringAsync());
+                var content = await apiResponse.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    temp.ErrorMessages.Add(content);
+                }
+           
                 temp.ErrorMessages.Add(e.StackTrace);
                 temp.StatusCode = apiResponse.StatusCode;
+
+                if(apiResponse.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
+                {
+                    temp.ErrorMessages.Add("Endpoint not found");
+                }
 
                 var APIResponse = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(temp));
 

@@ -1,6 +1,9 @@
 ﻿@page "/"
 @page "/pages/authentication/login"
+@using MudTemplate.Client.Services.IServices;
 @layout LoginLayout
+@inject NavigationManager _navigationManager
+@inject IAccountService _accountService
 
 
 
@@ -9,24 +12,40 @@
 
 <MudText>Don't have an account? <MudLink Href="/pages/authentication/register">Sign Up</MudLink></MudText>
 
-<MudTextField T="string" Value="@("staff@mudblazor.com")" Label="E-mail" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+<MudForm @bind-IsValid="@success" @ref="form">
+    <MudTextField T="string" @bind-Value="@user.UserName" Label="E-mail"
+                  Required="true"
+                  RequiredError="required" Variant="Variant.Outlined" Class="my-6"></MudTextField>
 
-<MudTextField @bind-Value="@Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+    <MudTextField @bind-Value="@user.Password"
+                  Required="true"
+                  RequiredError="required" 
+    Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
 
+</MudForm>
 <div Class="d-flex justify-space-between align-center">
     <MudCheckBox T="bool" Label="Remember me?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
     <MudLink Href="/pages/authentication/forgot-password">Forgot pwd?</MudLink>
 </div>
 
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" Link="/home" Size="Size.Large" FullWidth="true">Sign In</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ValidateForm" Size="Size.Large" FullWidth="true">Sign In</MudButton>
+@if (ErrorMessage is not null)
+{
+    <MudAlert Severity="Severity.Error" Class="mt-8 mud-width-full" Style="max-width:500px;" Elevation="25">@ErrorMessage</MudAlert>
+}
+
 
 @code {
-    string Password { get; set; } = "BMWvBPJXZu";
-
+    User user = new();
+    string ErrorMessage;
     bool PasswordVisibility;
     InputType PasswordInput = InputType.Password;
     string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    MudForm form = new();
+    bool success = false;
+    string[] errors = { };
 
     void TogglePasswordVisibility()
     {
@@ -42,5 +61,43 @@
             PasswordInputIcon = Icons.Material.Filled.Visibility;
             PasswordInput = InputType.Text;
         }
+    }
+
+    private async Task ValidateForm()
+    {
+        ErrorMessage = null;
+        await form?.Validate();
+
+        if (success)
+        {
+            await TryLogin();
+
+        }
+        else
+        {
+            ErrorMessage = "Please enter username and password";
+        }
+    }
+
+    private async Task TryLogin()
+    {
+
+        var apiResults = await _accountService.Login<APIResponse<bool?>>(user);
+        if (apiResults.IsSuccess)
+        {
+            if (apiResults.Result == true)
+            {
+                _navigationManager.NavigateTo("/home");
+            }
+            else
+            {
+                ErrorMessage = apiResults.ErrorMessages.FirstOrDefault();
+            }
+        }
+        else
+        {
+            ErrorMessage = "Network issues found.";
+        }
+
     }
 }

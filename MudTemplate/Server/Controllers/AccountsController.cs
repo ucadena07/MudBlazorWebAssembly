@@ -5,6 +5,7 @@ using MudTemplate.Server.Helpers.Interfaces;
 using MudTemplate.Shared.IRepositories;
 using MudTemplate.Shared.Models;
 using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MudTemplate.Server.Controllers
 {
@@ -47,22 +48,22 @@ namespace MudTemplate.Server.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GeneralAPIResponse>> Login([FromBody] User model)
         {
-
             //Checks that password and username are provided
             if (!ModelState.IsValid)
             {
                 _response.IsSuccess = false;
                 _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.ErrorMessages.Add("Username and password must be provided");
+                _response.AddModelStateErrors(ModelState);
                 return BadRequest(_response);
             }
 
             //validate that user exists, is active, not blocked and password is correct
-            var userValid = _accountRepository.VerifyUser(model);
+            var userValid = await _accountRepository.VerifyUser(model);
 
             if (!userValid)
             {
-                _response.IsSuccess = false;
+                _response.IsSuccess = true;
+                _response.Result = false;
                 _response.StatusCode = HttpStatusCode.Unauthorized;
                 _response.ErrorMessages.Add("Invalid Credentials");
                 return Unauthorized(_response);

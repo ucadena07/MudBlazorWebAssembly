@@ -28,46 +28,35 @@ namespace MudTemplate.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GeneralAPIResponse>> Get(int id)
         {
-            try
+            var user = await _userRepository.Get(id);
+
+            if(user is null)
             {
                 _response.IsSuccess = true;
-                _response.Result = await _userRepository.Get(id);
-                _response.StatusCode = System.Net.HttpStatusCode.OK;
-                return Ok(_response);
+                _response.Result = null;
+                _response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return NotFound(_response);
             }
-            catch (Exception e)
-            {
 
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add(e.Message);
-                _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                return BadRequest(_response);
-            }
+            _response.IsSuccess = true;
+            _response.Result = user;
+            _response.StatusCode = System.Net.HttpStatusCode.OK;
+            return Ok(_response);
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GeneralAPIResponse>> GetAll()
         {
-            try
-            {
-                _response.IsSuccess = true;
-                _response.Result = await _userRepository.GetAll();
-                _response.StatusCode = System.Net.HttpStatusCode.OK;
-                return Ok(_response);
-            }
-            catch (Exception e)
-            {
-
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add(e.Message);
-                _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                return BadRequest(_response);
-            }
+            _response.IsSuccess = true;
+            _response.Result = await _userRepository.GetAll();
+            _response.StatusCode = System.Net.HttpStatusCode.OK;
+            return Ok(_response);
         }
     }
 }

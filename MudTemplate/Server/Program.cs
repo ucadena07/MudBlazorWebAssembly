@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -18,6 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProjectServices();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.Configure<ApiBehaviorOptions>(options
+    => options.SuppressModelStateInvalidFilter = true);
 
 //Add Db
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
