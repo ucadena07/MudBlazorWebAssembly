@@ -15,6 +15,7 @@ namespace MudTemplate.Backend.Repositories
         {
             _context = context;
             _passwordService = passwordService;
+    
         }
         public async Task CreateUser(User model)
         {
@@ -35,23 +36,5 @@ namespace MudTemplate.Backend.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> VerifyUser(User model)
-        {
-            var user = await _context.SiteUsers.FirstOrDefaultAsync(it => it.UserName == model.UserName);  
-            if (user == null)
-            {
-                return false;
-            }
-            var passwordValid = _passwordService.VerifyPasswordHash(model.Password,user.PasswordHash,user.PasswordSalt);
-            if(!passwordValid)
-            {
-                return false;
-            }
-            if(user.Blocked || !user.Active)
-            {
-                return false;
-            }
-            return true;
-        }
     }
 }

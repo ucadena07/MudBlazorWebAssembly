@@ -1,0 +1,25 @@
+﻿<MudButton Disabled="@Processing" OnClick="ProcessSomething" Variant="@Variant" Color="@Color" ButtonType="ButtonType.Button">
+    @if (Processing)
+    {
+        <MudProgressCircular Class="ms-n1" Size="@Size" Indeterminate="true" />
+        <MudText Class="ms-2">Processing</MudText>
+    }
+    else
+    {
+        <MudText>@ButtonText</MudText>
+    }
+</MudButton>
+@code {
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public bool Processing { get; set; } = false;
+    [Parameter] public Color Color { get; set; } = Color.Info;
+    [Parameter] public Size Size { get; set; } = Size.Small;
+    [Parameter] public Variant Variant { get; set; } = Variant.Filled;
+    [Parameter] public EventCallback CallBack { get; set; }
+
+
+    async Task ProcessSomething()
+    {
+        await CallBack.InvokeAsync();
+    }
+}

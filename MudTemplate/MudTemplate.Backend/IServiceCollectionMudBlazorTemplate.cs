@@ -10,6 +10,8 @@ using AutoMapper;
 using MudTemplate.Backend.Helpers;
 using MudTemplate.Shared.Utilities.IUtilities;
 using MudTemplate.Shared.Utilities;
+using MudTemplate.Backend.Helpers.Interfaces;
+using MudTemplate.Backend.Services;
 
 namespace MudTemplate.Backend
 {
@@ -21,6 +23,8 @@ namespace MudTemplate.Backend
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IJwtService, JwtService>();
+
             services.AddAutoMapper(new[] { typeof(MappingProfile).Assembly });
 
             return services;

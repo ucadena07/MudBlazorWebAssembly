@@ -17,5 +17,6 @@ namespace MudTemplate.Backend
         }
 
         public DbSet<SiteUser> SiteUsers { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

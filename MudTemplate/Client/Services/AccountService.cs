@@ -23,13 +23,13 @@ namespace MudTemplate.Client.Services
 
         }
 
-        public async Task<T> Login<T>(User data)
+        public async Task<T> Login<T>(AuthRequest authRequest)
         {
             return await _httpService.SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.POST,
                 Url = "api/Accounts/Login",
-                Data = data
+                Data = authRequest
             });
 
         }
