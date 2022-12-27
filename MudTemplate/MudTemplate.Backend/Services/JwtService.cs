@@ -51,7 +51,7 @@ namespace MudTemplate.Backend.Services
             var stringToken = await GenerateToken(user.UserName);
             var refreshToken = GenerateRefreshToken();
 
- 
+
 
             return await SaveTokenDetails(ipAddress, user.UserId, stringToken, refreshToken);
         }
@@ -61,7 +61,7 @@ namespace MudTemplate.Backend.Services
             var userRefreshToken = new RefreshToken
             {
                 CreatedDate = DateTime.UtcNow,
-                ExpirationDate = DateTime.UtcNow.AddMinutes(3),
+                ExpirationDate = DateTime.UtcNow.AddMinutes(5),
                 IpAddress = ipAddress,
                 IsInvalidated = false,
                 UserRefreshToken = refreshToken,
@@ -77,8 +77,9 @@ namespace MudTemplate.Backend.Services
             {
                 Token = tokenString,
                 RefreshToken = refreshToken,
-                IsSuccess= true,
-               
+                IsSuccess = true,
+                TokenExpDate = userRefreshToken.ExpirationDate
+
             };
 
             return await Task.FromResult(response);
@@ -113,24 +114,25 @@ namespace MudTemplate.Backend.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var descriptor = new SecurityTokenDescriptor()
+            var claims = new List<Claim>
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userName)
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(5),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256)
-
+                new Claim(ClaimTypes.Name, userName),
+                new Claim(ClaimTypes.Email, userName),
             };
 
-            var token = tokenHandler.CreateToken(descriptor);
+            JwtSecurityToken token = new(
+            issuer: null,
+            audience: null,
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(5),
+            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256)
+            );
 
             return tokenHandler.WriteToken(token);
         }
 
-     
-  
+
+
 
         public async Task<bool> IsTokenValid(string accessToken, string ipAddress)
         {

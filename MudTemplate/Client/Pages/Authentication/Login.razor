@@ -1,9 +1,11 @@
 ﻿@page "/"
 @page "/pages/authentication/login"
-@using MudTemplate.Client.Services.IServices;
+@using MudTemplate.Client.Auth;
+
 @layout LoginLayout
 @inject NavigationManager _navigationManager
 @inject IAccountService _accountService
+@inject ILoginService _loginService
 
 
 
@@ -28,7 +30,7 @@
     <MudLink Href="/pages/authentication/forgot-password">Forgot pwd?</MudLink>
 </div>
 
-<LoadingButton Processing="@Loading" CallBack="ValidateForm" ButtonText="Login"/>
+<LoadingButton Processing="@Loading" CallBack="ValidateForm" ButtonText="Login" FullWidth="true"/>
 
 @if (ErrorMessage is not null)
 {
@@ -38,7 +40,11 @@
 
 @code {
     bool Loading = false;
-    AuthRequest authRequest = new();
+    AuthRequest authRequest = new()
+    {
+        UserName = "ulises@test.com",
+        Password = "Admin123*"
+    };
     string ErrorMessage;
     bool PasswordVisibility;
     InputType PasswordInput = InputType.Password;
@@ -88,6 +94,14 @@
         {
             if (apiResults.Result is not null)
             {
+                await _loginService.Login(new UserToken
+                {
+                    Token = apiResults.Result.Token,
+                    RefreshToken = apiResults.Result.RefreshToken,
+                    Expiration = apiResults.Result.TokenExpDate
+
+                });
+
                 _navigationManager.NavigateTo("/home");
             }
             else

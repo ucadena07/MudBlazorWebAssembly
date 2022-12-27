@@ -1,4 +1,4 @@
-﻿<MudButton Disabled="@Processing" OnClick="ProcessSomething" Variant="@Variant" Color="@Color" ButtonType="ButtonType.Button">
+﻿<MudButton Disabled="@Processing" OnClick="ProcessSomething" Variant="@Variant" Color="@Color" ButtonType="ButtonType.Button" FullWidth="@FullWidth">
     @if (Processing)
     {
         <MudProgressCircular Class="ms-n1" Size="@Size" Indeterminate="true" />
@@ -11,6 +11,7 @@
 </MudButton>
 @code {
     [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public bool FullWidth { get; set; }
     [Parameter] public bool Processing { get; set; } = false;
     [Parameter] public Color Color { get; set; } = Color.Info;
     [Parameter] public Size Size { get; set; } = Size.Small;

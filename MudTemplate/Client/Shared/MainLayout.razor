@@ -1,27 +1,39 @@
-﻿@inherits LayoutComponentBase
+﻿@using MudTemplate.Client.Auth;
+@inherits LayoutComponentBase
+@inject TokenRenewer tokenRenewer
 
 
-<MudThemeProvider Theme="_themeManager.Theme" />
+<MudThemeProvider Theme="new MudBlazorAdminDashboard()" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">MudBlazor Template</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <AuthorizeView>
+            <Authorized>
+                <MudText Color="Color.Dark">Hello, @context.User.Identity.Name</MudText>
+            </Authorized>
+        </AuthorizeView>
+
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Edge="Edge.End" />
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Dark">
+            <MudMenuItem>My account</MudMenuItem>
+            <MudMenuItem Href="/logout">Logout</MudMenuItem>
+        </MudMenu>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-    <NavMenu/>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6" Color="Color.Tertiary" Class="mt-1 bg-white">MudBlazor Template</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
     </MudDrawer>
-    <MudMainContent >
+    <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-8">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
-
 
 @code {
     private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
@@ -34,28 +46,11 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    void OpenThemeManager(bool value)
+
+    protected override async  Task OnInitializedAsync()
     {
-        _themeManagerOpen = value;
+        tokenRenewer.Initiate();
     }
 
-    void UpdateTheme(ThemeManagerTheme value)
-    {
-        _themeManager = value;
-        StateHasChanged();
-    }
 
-    protected override void OnInitialized()
-    {
-        _themeManager.Theme = new MudBlazorAdminDashboard();
-        _themeManager.DrawerClipMode = DrawerClipMode.Always;
-        _themeManager.FontFamily = "Montserrat";
-        _themeManager.DefaultBorderRadius = 3;
-    }
-
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
-{
-        new BreadcrumbItem("Personal", href: "#"),
-        new BreadcrumbItem("Dashboard", href: "#"),
-    };
 }

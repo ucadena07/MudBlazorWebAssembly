@@ -1,4 +1,5 @@
-﻿using MudTemplate.Client.Services.IServices;
+﻿
+using MudTemplate.Shared.IServices;
 using MudTemplate.Shared.Models;
 using MudTemplate.Shared.Utilities;
 
@@ -30,6 +31,17 @@ namespace MudTemplate.Client.Services
                 ApiType = SD.ApiType.POST,
                 Url = "api/Accounts/Login",
                 Data = authRequest
+            });
+
+        }
+
+        public async Task<T> RenewToken<T>(RefreshTokenRequest refreshRequest)
+        {
+            return await _httpService.SendAsync<T>(new APIRequest
+            {
+                ApiType = SD.ApiType.POST,
+                Url = "api/Accounts/RefreshToken",
+                Data = refreshRequest
             });
 
         }

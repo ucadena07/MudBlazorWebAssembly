@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace MudTemplate.Shared.Models
 {
-    public class AuthResponse
+    public class UserToken
     {
         public string Token { get; set; }
-        public DateTime TokenExpDate { get; set; }
         public string RefreshToken { get; set; }
-        public bool IsSuccess { get; set; }
-        public string Reason { get; set; }
+        public DateTime Expiration { get; set; }
     }
 }

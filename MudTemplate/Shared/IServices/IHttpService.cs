@@ -1,6 +1,6 @@
 ﻿using MudTemplate.Shared.Models;
 
-namespace MudTemplate.Client.Services.IServices
+namespace MudTemplate.Shared.IServices
 {
     public interface IHttpService
     {

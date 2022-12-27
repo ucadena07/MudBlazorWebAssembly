@@ -9,6 +9,7 @@ using MudTemplate.Shared.IRepositories;
 using MudTemplate.Shared.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MudTemplate.Server.Controllers
@@ -121,7 +122,7 @@ namespace MudTemplate.Server.Controllers
             _context.RefreshTokens.Update(userRefreshToken);
             await _context.SaveChangesAsync();
 
-            var userName = token.Claims.FirstOrDefault(it => it.Type == JwtRegisteredClaimNames.NameId).Value;
+            var userName = token.Claims.FirstOrDefault(it => it.Type == ClaimTypes.Name).Value;
             var dbReponse = await _jwtService.GetRefreshTokenAsync(ipAddress, userRefreshToken.UserId, userName);
             _response.Result = dbReponse;
 
@@ -132,7 +133,7 @@ namespace MudTemplate.Server.Controllers
         {
             if (userRefreshToken is null)
                 return new AuthResponse { IsSuccess = false, Reason = "Invalid Token Details" };
-            if (token.ValidTo > DateTime.UtcNow)
+            if (token.ValidTo.Subtract(DateTime.UtcNow) > TimeSpan.FromMinutes(2))
                 return new AuthResponse { IsSuccess = false, Reason = "Token not expired" };
             if (!userRefreshToken.IsActive)
                 return new AuthResponse { IsSuccess = false, Reason = "Refresh token expired" };

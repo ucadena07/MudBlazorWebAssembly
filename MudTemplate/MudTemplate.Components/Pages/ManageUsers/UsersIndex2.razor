@@ -1,8 +1,8 @@
-﻿@*@page "/users/manageusers"
-@using MudTemplate.Client.Services.IServices;
+﻿@page "/users/manageusers"
 @using MudTemplate.Shared.Dtos;
+@using MudTemplate.Shared.Models;
 @inject IUserService _userService
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 
 <style>
     .center {
@@ -47,7 +47,7 @@
 }
 else
 {
-    <LoadingComponent />
+ @*   <LoadingComponent />*@
 }
 
 
@@ -66,4 +66,3 @@ else
         }
     }
 }
-*@

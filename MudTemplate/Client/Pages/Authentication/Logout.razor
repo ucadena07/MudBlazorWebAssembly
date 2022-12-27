@@ -1,0 +1,14 @@
+﻿@page "/logout"
+@using MudTemplate.Client.Auth;
+@inject ILoginService _loginService
+@inject NavigationManager _navManager
+
+<MudAlert Severity="Severity.Info">Login out...</MudAlert>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await _loginService.Logout();
+     
+    }
+}

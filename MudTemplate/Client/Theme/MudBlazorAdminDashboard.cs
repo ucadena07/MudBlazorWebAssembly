@@ -8,18 +8,28 @@ namespace MudTemplate.Client.Theme
         {
             Palette = new Palette()
             {
-                Primary = Colors.Blue.Darken1,
-                Secondary = Colors.DeepPurple.Accent2,
-                Background = Colors.Grey.Lighten5,
-                AppbarBackground = Colors.Blue.Darken1,
-                DrawerBackground = "#FFF",
-                DrawerText = "rgba(0,0,0, 0.7)",
-                Success = "#06d79c"
+                Primary = "#7178C7",
+                Secondary = "#6c757d",
+                Tertiary = "#ffffffff",
+                Background = "#fafbfe",
+                
+                AppbarBackground = "#eef2f7",
+                DrawerBackground = "#313a46",
+                DrawerText = "#838c90",
+                Success = "#06d79c",
+                
+                
+                
             };
+            
 
             LayoutProperties = new LayoutProperties()
             {
-                DefaultBorderRadius = "3px"
+                DefaultBorderRadius = "3px",
+                DrawerWidthLeft = "260px",
+                DrawerWidthRight = "300px"
+
+
             };
 
             Typography = new Typography()
