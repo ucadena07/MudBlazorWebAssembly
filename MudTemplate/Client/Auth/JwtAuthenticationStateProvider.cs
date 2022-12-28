@@ -74,8 +74,9 @@ namespace MudTemplate.Client.Auth
             var token = await _js.GetFromLocalStorage(TOKENKEY);
             var renewToken = await _js.GetFromLocalStorage(REFRESHTOKENKEY);
 
-            if (string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(renewToken))
             {
+                await Logout();
                 return Anonymous;
             }
 
@@ -86,7 +87,7 @@ namespace MudTemplate.Client.Auth
             {
                 if (isTokenExpired(expTime))
                 {
-                    await CleanUp();
+                    await Logout();
                     return Anonymous;
                 }
 

@@ -11,6 +11,7 @@ namespace MudTemplate.Shared.Models
     public class APIRequest
     {
         public ApiType ApiType { get; set; } = ApiType.GET;
+        public bool CheckTokens { get; set; } = true;
         public string Url { get; set; }
         public string Token { get; set; }
         public object Data { get; set; }

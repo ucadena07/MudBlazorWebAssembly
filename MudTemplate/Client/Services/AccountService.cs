@@ -30,7 +30,8 @@ namespace MudTemplate.Client.Services
             {
                 ApiType = SD.ApiType.POST,
                 Url = "api/Accounts/Login",
-                Data = authRequest
+                Data = authRequest,
+                CheckTokens = false
             });
 
         }
