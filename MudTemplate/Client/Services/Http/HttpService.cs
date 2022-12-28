@@ -82,10 +82,7 @@ namespace MudTemplate.Client.Services.Http
                     }
                     if (apiResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                     {
-                        await _js.RemoveItem(TOKENKEY);
-                        await _js.RemoveItem(EXPTOKENKEY);
-                        await _js.RemoveItem(REFRESHTOKENKEY);
-                        _navigationManager.NavigateTo("/");
+                        _navigationManager.NavigateTo("/logout");
                     }
 
 
@@ -95,7 +92,7 @@ namespace MudTemplate.Client.Services.Http
                 {
                     temp.StatusCode = System.Net.HttpStatusCode.Unauthorized;
                     temp.ErrorMessages.Add(e.Message);
-                    _navigationManager.NavigateTo("/");
+                    _navigationManager.NavigateTo("/logout");
                 }
 
                 

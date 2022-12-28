@@ -9,6 +9,6 @@
     protected override async Task OnInitializedAsync()
     {
         await _loginService.Logout();
-     
+        _navManager.NavigateTo("/");
     }
 }

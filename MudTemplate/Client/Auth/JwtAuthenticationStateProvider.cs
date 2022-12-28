@@ -43,7 +43,7 @@ namespace MudTemplate.Client.Auth
         {
             await CleanUp();
             NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
-            _navigationManager.NavigateTo("/");
+            _navigationManager.NavigateTo("/logout");
         }
 
         public async Task TryRenewToken()

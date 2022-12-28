@@ -25,10 +25,12 @@ function initializeInactivityTimer(dotnetHelper) {
 
     function resetTimer() {
         clearTimeout(timer)
-        timer = setTimeout(logout, 3000)
+        timer = setTimeout(logout, 1000)
     }
 
     function logout() {
+        document.onmousemove = null;
+        document.onkeypress = null;
         dotnetHelper.invokeMethodAsync("Logout")
     }
 

@@ -1,7 +1,9 @@
 ﻿@using MudTemplate.Client.Auth;
+@using MudTemplate.Components.Helpers.JsExtensions;
 @inherits LayoutComponentBase
 @inject TokenRenewer tokenRenewer
-
+@inject NavigationManager _navManager
+@inject IJSRuntime _js
 
 <MudThemeProvider Theme="new MudBlazorAdminDashboard()" />
 <MudDialogProvider />
@@ -37,6 +39,7 @@
 
 @code {
     private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
 
     public bool _drawerOpen = true;
     public bool _themeManagerOpen = false;
@@ -49,7 +52,18 @@
 
     protected override async  Task OnInitializedAsync()
     {
+        await _js.InitializeInactivityTimer(DotNetObjectReference.Create(this));
         tokenRenewer.Initiate();
+    }
+
+    [JSInvokable]
+    public async Task Logout()
+    {
+        var authState = await AuthenticationState;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            _navManager.NavigateTo("/logout");
+        }
     }
 
 
