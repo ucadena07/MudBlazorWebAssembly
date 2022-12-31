@@ -45,5 +45,10 @@ namespace MudTemplate.Components.Helpers.JsExtensions
         {
             await js.InvokeVoidAsync("initializeInactivityTimer", dotNetObj);
         }
+
+        public static async ValueTask ClearMouseEvents(this IJSRuntime js) 
+        {
+            await js.InvokeVoidAsync("clearMouseEvents");
+        }
     }
 }

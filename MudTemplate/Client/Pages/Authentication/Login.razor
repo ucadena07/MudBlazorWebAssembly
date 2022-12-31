@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@*@page "/"*@
 @page "/pages/authentication/login"
 @using MudTemplate.Client.Auth;
 
@@ -39,6 +39,7 @@
 
 
 @code {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
     bool Loading = false;
     AuthRequest authRequest = new()
     {
@@ -102,7 +103,7 @@
 
                 });
 
-                _navigationManager.NavigateTo("/home");
+                _navigationManager.NavigateTo("/");
             }
             else
             {
@@ -114,5 +115,17 @@
             ErrorMessage = "Network issues found.";
         }
         Loading = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            _navigationManager.NavigateTo("/");
+
+        }
+
+
     }
 }

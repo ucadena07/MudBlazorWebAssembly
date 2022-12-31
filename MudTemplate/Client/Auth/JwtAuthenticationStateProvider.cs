@@ -32,9 +32,7 @@ namespace MudTemplate.Client.Auth
 
         public async Task Login(UserToken userToken)
         {
-            await _js.SetInLocalStorage(TOKENKEY, userToken.Token);
-            await _js.SetInLocalStorage(REFRESHTOKENKEY, userToken.RefreshToken);
-            await _js.SetInLocalStorage(EXPTOKENKEY, userToken.Expiration.ToString());
+            await SetTokensInLocalStorage(userToken);
             var authState = BuildAuthenticationState(userToken.Token);
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
         }
@@ -43,7 +41,8 @@ namespace MudTemplate.Client.Auth
         {
             await CleanUp();
             NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
-            _navigationManager.NavigateTo("/logout");
+            //var anonymous = new ClaimsIdentity();
+            //await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonymous)));
         }
 
         public async Task TryRenewToken()
@@ -74,10 +73,11 @@ namespace MudTemplate.Client.Auth
             var token = await _js.GetFromLocalStorage(TOKENKEY);
             var renewToken = await _js.GetFromLocalStorage(REFRESHTOKENKEY);
 
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(renewToken))
+            if (await CheckForTokensInLocalStorage())
             {
-                await Logout();
+                await CleanUp();
                 return Anonymous;
+
             }
 
             var expTimeString = await _js.GetFromLocalStorage(EXPTOKENKEY);
@@ -129,11 +129,26 @@ namespace MudTemplate.Client.Auth
 
         }
 
+        private async Task<bool> CheckForTokensInLocalStorage()
+        {
+            var token = await _js.GetFromLocalStorage(TOKENKEY);
+            var renewToken = await _js.GetFromLocalStorage(REFRESHTOKENKEY);
+            return string.IsNullOrEmpty(token) || string.IsNullOrEmpty(renewToken);
+        }
+
+        private async Task SetTokensInLocalStorage(UserToken userToken)
+        {
+            await _js.SetInLocalStorage(TOKENKEY, userToken.Token);
+            await _js.SetInLocalStorage(REFRESHTOKENKEY, userToken.RefreshToken);
+            await _js.SetInLocalStorage(EXPTOKENKEY, userToken.Expiration.ToString());
+        }
+
         private async Task CleanUp()
         {
             await _js.RemoveItem(TOKENKEY);
             await _js.RemoveItem(EXPTOKENKEY);
             await _js.RemoveItem(REFRESHTOKENKEY);
+            await _js.ClearMouseEvents();
             _httpClient.DefaultRequestHeaders.Authorization = null;
         }
 

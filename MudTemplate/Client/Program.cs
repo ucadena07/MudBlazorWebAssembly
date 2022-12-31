@@ -32,6 +32,9 @@ builder.Services.AddScoped<ILoginService, JwtAuthenticationStateProvider>(provid
     provider.GetRequiredService<JwtAuthenticationStateProvider>()   
 );
 
-builder.Services.AddApiAuthorization();
+//removes authorizations console logs 
+builder.Logging.AddFilter("Microsoft.AspNetCore.Authorization.*", LogLevel.None);
+
+//builder.Services.AddApiAuthorization();
 
 await builder.Build().RunAsync();

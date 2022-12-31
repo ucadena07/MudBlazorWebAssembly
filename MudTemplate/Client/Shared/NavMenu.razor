@@ -2,9 +2,9 @@
 <MudDivider Class="mb-4" />
 <MudNavMenu Color="Color.Tertiary" Bordered="true">
     <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Personal</MudText>
-    <MudNavLink Href="/home" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Dashboard</MudNavLink>
-    <AuthorizeView>
-        <Authorized>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Dashboard</MudNavLink>
+    <AuthorizeView Roles="admin">
+        <Authorized >
             <MudNavLink Href="/users/manageusers" Icon="@Icons.Material.Outlined.Person">Manage Users</MudNavLink>
         </Authorized>
     </AuthorizeView>

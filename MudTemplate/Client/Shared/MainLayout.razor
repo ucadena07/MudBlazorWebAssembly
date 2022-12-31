@@ -1,41 +1,52 @@
 ﻿@using MudTemplate.Client.Auth;
+@using MudTemplate.Client.Pages.Authentication
 @using MudTemplate.Components.Helpers.JsExtensions;
 @inherits LayoutComponentBase
 @inject TokenRenewer tokenRenewer
 @inject NavigationManager _navManager
 @inject IJSRuntime _js
 
+
 <MudThemeProvider Theme="new MudBlazorAdminDashboard()" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <AuthorizeView>
-            <Authorized>
+<AuthorizeView>
+    <Authorized>
+        <MudLayout>
+            <MudAppBar Elevation="1">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
                 <MudText Color="Color.Dark">Hello, @context.User.Identity.Name</MudText>
-            </Authorized>
-        </AuthorizeView>
+                <MudSpacer />
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Dark">
+                    <MudMenuItem>My account</MudMenuItem>
+                    <MudMenuItem Href="/logout">Logout</MudMenuItem>
+                </MudMenu>
+            </MudAppBar>
+            <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+                <MudDrawerHeader>
+                    <MudText Typo="Typo.h6" Color="Color.Tertiary" Class="mt-1 bg-white">MudBlazor Template</MudText>
+                </MudDrawerHeader>
+                <NavMenu />
+            </MudDrawer>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-8">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </Authorized>
+    <NotAuthorized>
+        <MudLayout>
 
-        <MudSpacer />
-        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Dark">
-            <MudMenuItem>My account</MudMenuItem>
-            <MudMenuItem Href="/logout">Logout</MudMenuItem>
-        </MudMenu>
-    </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6" Color="Color.Tertiary" Class="mt-1 bg-white">MudBlazor Template</MudText>
-        </MudDrawerHeader>
-        <NavMenu />
-    </MudDrawer>
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-8">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+                <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-8">
+             @*       <Login />*@
+                </MudContainer>
+
+        </MudLayout>
+    </NotAuthorized>
+</AuthorizeView>
+
 
 @code {
     private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
@@ -50,10 +61,20 @@
     }
 
 
-    protected override async  Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await _js.InitializeInactivityTimer(DotNetObjectReference.Create(this));
-        tokenRenewer.Initiate();
+        var authState = await AuthenticationState;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            await _js.InitializeInactivityTimer(DotNetObjectReference.Create(this));
+            tokenRenewer.Initiate();
+
+        }
+        else
+        {
+           _navManager.NavigateTo("/logout");
+        }
+
     }
 
     [JSInvokable]

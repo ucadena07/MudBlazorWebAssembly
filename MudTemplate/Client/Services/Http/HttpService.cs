@@ -16,9 +16,7 @@ namespace MudTemplate.Client.Services.Http
 {
     public class HttpService : IHttpService
     {
-        private readonly string TOKENKEY = "ed15e2c2-0934-4b6b-bb5e-10e0dbc43c2c";
-        private readonly string REFRESHTOKENKEY = "ed1565e2c2-0934-4b6b-bb5e-10e0545dbc43c2c";
-        private readonly string EXPTOKENKEY = "61ae0e2a-40cc-46ce-bd73-d041c491ac2d";
+
         private readonly HttpClient _httpClient;
         private readonly IJSRuntime _js;
         private readonly NavigationManager _navigationManager;
@@ -36,8 +34,8 @@ namespace MudTemplate.Client.Services.Http
 
             try
             {
-                var token = await _js.GetFromLocalStorage(TOKENKEY);
-                var renewToken = await _js.GetFromLocalStorage(REFRESHTOKENKEY);
+                var token = await _js.GetFromLocalStorage(SD.TOKENKEY);
+                var renewToken = await _js.GetFromLocalStorage(SD.REFRESHTOKENKEY);
                 if ((string.IsNullOrEmpty(renewToken) || string.IsNullOrEmpty(token)) && apiRequest.CheckTokens == true)
                 {
                     throw new Exception("Tokens are missing");

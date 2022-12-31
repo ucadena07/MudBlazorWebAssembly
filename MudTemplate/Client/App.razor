@@ -1,20 +1,40 @@
-﻿<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] {typeof(Component1).Assembly}">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
-            <Authorizing>
-                Authorizing..
-            </Authorizing>
-            <NotAuthorized>
-                401... Not Authorized to be here...
-            </NotAuthorized>
-        </AuthorizeRouteView>
-    </Found>
-    <NotFound>
-        <CascadingAuthenticationState>
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@using Microsoft.Extensions.Options;
+@using MudTemplate.Client.Auth;
+@inject NavigationManager Navigation
+@inject ILoginService _loginService;
+@inject IOptionsSnapshot<RemoteAuthenticationOptions<ApiAuthorizationProviderOptions>> Options
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] {typeof(Component1).Assembly}" OnNavigateAsync="TryRenewTokens">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    Authorizing..
+                </Authorizing>
+                <NotAuthorized>
+                    401... Not Authorized to be here...
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+@*            <CascadingAuthenticationState>*@
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
                 <p role="alert">Sorry, there's nothing at this address.</p>
             </LayoutView>
-        </CascadingAuthenticationState>
-    </NotFound>
-</Router>
+@*            </CascadingAuthenticationState>*@
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+
+    private async Task TryRenewTokens(NavigationContext args)
+    {
+        if (!args.Path.StartsWith("pages/authentication") && args.Path != "/" && args.Path != "" && args.Path != "logout")
+        {
+            await _loginService.TryRenewToken();
+        }
+    
+    }
+}

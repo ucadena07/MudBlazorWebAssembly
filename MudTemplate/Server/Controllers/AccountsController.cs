@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace MudTemplate.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [AllowAnonymous]
     public class AccountsController : ControllerBase
     {
         private readonly ILogger<AccountsController> _logger;
@@ -86,6 +88,7 @@ namespace MudTemplate.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

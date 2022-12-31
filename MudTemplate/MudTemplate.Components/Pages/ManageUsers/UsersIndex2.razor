@@ -2,7 +2,7 @@
 @using MudTemplate.Shared.Dtos;
 @using MudTemplate.Shared.Models;
 @inject IUserService _userService
-@*@attribute [Authorize]*@
+@attribute [Authorize(Roles = "admin")]
 
 <style>
     .center {

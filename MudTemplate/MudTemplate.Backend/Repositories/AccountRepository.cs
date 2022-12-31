@@ -7,6 +7,7 @@ using MudTemplate.Shared.Utilities.IUtilities;
 
 namespace MudTemplate.Backend.Repositories
 {
+
     public class AccountRepository : IAccountRepository
     {
         private readonly ApplicationDbContext _context;
